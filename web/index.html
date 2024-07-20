@@ -44,25 +44,7 @@
 <body>
   <script src="flutter_bootstrap.js" async></script>
   <script src="https://telegram.org/js/telegram-web-app.js" defer=""></script>
-  <!-- <script>window.scroll(0, window.document.body.scrollHeight);</script> -->
-    <script>
-      window.addEventListener('DOMContentLoaded', (event) => {
-        const tg = window.Telegram.WebApp;
-
-        // Включение вертикальной прокрутки по умолчанию
-        tg.enableVerticalSwipes();
-
-        // Обработка события закрытия текстового поля
-        document.addEventListener('focusout', (event) => {
-          tg.enableVerticalSwipes();
-        });
-
-        // Включение вертикальной прокрутки при загрузке страницы
-        window.addEventListener('load', (event) => {
-          tg.enableVerticalSwipes();
-        });
-      });
-    </script>
+  <script>window.scroll(0, window.document.body.scrollHeight);</script>
 </body>
 
 </html>
