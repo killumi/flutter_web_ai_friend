@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -39,7 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 itemBuilder: (context, index) {
                   return Container(
-                    key: ValueKey(index),
+                    key: ValueKey(data[index]),
                     height: 70,
                     color: Colors.blueAccent,
                     margin: const EdgeInsets.only(bottom: 15),
@@ -69,8 +70,20 @@ class _ChatScreenState extends State<ChatScreen> {
                     _controller.clear();
                     setState(() {});
                     // scrollToBottom();
-                    WidgetsBinding.instance.addPostFrameCallback((d) {
-                      scrollToBottom();
+                    // WidgetsBinding.instance.addPostFrameCallback((_) {
+                    //   scrollToBottom();
+                    // });
+                    // SchedulerBinding.instance.addPostFrameCallback((_) {
+                    // });
+                    // scrollToBottom();
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      // Задержка для обеспечения выполнения после завершения всех обновлений
+                      Future.delayed(const Duration(milliseconds: 50), () {
+                        // Еще одна проверка состояния перед скроллингом
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          scrollToBottom();
+                        });
+                      });
                     });
                   },
                   child: const Icon(CupertinoIcons.arrow_up),
@@ -86,11 +99,30 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void scrollToBottom() {
-    _scroll.animateTo(
-      _scroll.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.linear,
-    );
-    setState(() {});
+    if (_scroll.hasClients) {
+      final position = _scroll.position;
+      _scroll.animateTo(
+        position.maxScrollExtent,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.ease,
+      );
+    }
   }
+
+  // void scrollToBottom() async {
+  //   await Future.delayed(const Duration(milliseconds: 100));
+  //   if (_scroll.hasClients) {
+  //     _scroll.animateTo(
+  //       _scroll.position.maxScrollExtent,
+  //       duration: const Duration(milliseconds: 350),
+  //       curve: Curves.linear,
+  //     );
+  //   }
+  //   // _scroll.animateTo(
+  //   //   _scroll.position.maxScrollExtent,
+  //   //   duration: const Duration(milliseconds: 350),
+  //   //   curve: Curves.linear,
+  //   // );
+  //   // setState(() {});
+  // }
 }
